@@ -129,8 +129,14 @@
       //for each row, check index hasColConflictAt(index)
       var rows = this.rows();
       var result = false;
- 
-      for (var i=0; i < rows[0].length; i++) {
+      var len;
+
+      if (!rows[0]) {
+        len = 0;
+      } else {
+        len = rows[0].length;
+      }
+      for (var i=0; i < len; i++) {
         if(this.hasColConflictAt(i)){
           result = true;
         }

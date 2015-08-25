@@ -30,8 +30,11 @@ window.findNRooksSolution = function(n) {
     if (array.length === 0) {
       return;
     }
-    var row = array[0][0];
-    var col = array[0][1];
+    // var row = array[1][0];
+    // var col = array[1][1];
+    var randIndex = Math.floor(Math.random()*array.length);
+    var row = array[randIndex][0];
+    var col = array[randIndex][1];
     if (board.hasRowConflictAt(row) || board.hasColConflictAt(col)) {
         array.splice(0, 1);
         var newArray = array.slice();
@@ -65,18 +68,69 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solution = undefined; //fixme
+  // var solution = undefined; //fixme
+  if (n === 1) {
+    return 1;
+  } 
+  else {
+    return n * this.countNRooksSolutions(n-1);
+  }
+
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  // return solutionCount;
 };
 
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution = []; //array of arrays
+  var board = new Board({n: n});
+  var rows = board.rows();
+  //optionsAvailable (!hasconflicts)  array of positions(row, col)
+  var optionsMatrix = [];
+  for(var row = 0; row < rows.length; row++){//array of position arrays
+    for(var col = 0; col<rows.length; col++){
+      var position =[row, col];
+      optionsMatrix.push(position);
+      // debugger;
+    }
+  }
 
+  var magicFunction = function(array){
+    if (array.length === 0) {
+      return;
+    }
+    var randIndex = Math.floor(Math.random()*array.length);
+    var row = array[randIndex][0];
+    var col = array[randIndex][1];
+    // debugger;
+    if (board.hasAnyQueenConflictsOn(row,col)) {
+        array.splice(0, 1);
+        var newArray = array.slice();
+        magicFunction(newArray);
+    }else {
+      board.togglePiece(row, col);
+      var toBeSpliced = [];
+      for (var n = 0, len = array.length; n < len; n++) {
+        if (array[n][0] === row || array[n][1] === col) {
+          toBeSpliced.push(n);
+        }
+      }
+      var newArray = [];
+      for(var i = 0; i<array.length; i++){
+        if(!_.contains(toBeSpliced, i)){
+          newArray.push(array[i]);
+        }
+      }
+      magicFunction(newArray);
+    }
+  };
+  magicFunction(optionsMatrix);
+  
+  solution = board.rows();
+  // debugger;
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
 };
