@@ -150,7 +150,20 @@ window.findNQueensSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
-  var solution = undefined; //fixme
+  if (n === 2 || n===3) {
+    return 0;
+  }
+
+  var solutions = {};
+  for(var i = 0; i< 1000; i++){
+    var aSolution = this.findNQueensSolution(n);
+    var key = aSolution;
+
+    solutions[key] = aSolution;
+  }
+
+  var solutionCount = Object.keys(solutions).length;
+
 
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
