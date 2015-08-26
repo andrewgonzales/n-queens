@@ -114,13 +114,12 @@ window.findNQueensSolution = function(n) {
       var row = array[randIndex][0];
       var col = array[randIndex][1];
       board.togglePiece(row, col);
-      // debugger;
       if (board.hasAnyQueenConflictsOn(row,col)) {
           board.togglePiece(row, col);
           array.splice(randIndex, 1);
-          var newArray = array.slice();
-          magicFunction(newArray);
-      }else {
+          magicFunction(array);
+      }
+      else {
         pieces++;
         var toBeSpliced = [];
         for (var n = 0, len = array.length; n < len; n++) {
@@ -143,23 +142,43 @@ window.findNQueensSolution = function(n) {
 
   } while (!solutionFound);
   solution = board.rows();
+  this.reverse = {};
+  var inverseArray = [];
+  for (var j = solution.length-1; j >= 0; j--) {
+    inverseArray.push(solution[j]);
+  }
+  this.reverse[solution] = inverseArray;
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
+
+  
   return solution;
 };
 
+window.test = function(board) {
+  var test = new Board({n: 6});
+  if (!arguments[0]) {
+    displayBoard(test.rows());
+  } else {
+    displayBoard(board);
+  }
+};
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function(n) {
   if (n === 2 || n===3) {
     return 0;
   }
+  if (n===0) {
+    return 1;
+  }
 
   var solutions = {};
-  for(var i = 0; i< 1000; i++){
+  for(var i = 0; i < 250; i++){
     var aSolution = this.findNQueensSolution(n);
     var key = aSolution;
-
+    var mirror = this.reverse[aSolution];
     solutions[key] = aSolution;
+    solutions[mirror] = mirror;
   }
 
   var solutionCount = Object.keys(solutions).length;
